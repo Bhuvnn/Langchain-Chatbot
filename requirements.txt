@@ -1,0 +1,6 @@
+Langchain
+langchain_core
+langchain_community
+huggingface
+dotenv
+langchain_google_genai
