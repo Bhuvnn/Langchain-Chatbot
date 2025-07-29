@@ -34,34 +34,39 @@ st.markdown("""
         border: 1px solid;
         border-image: linear-gradient(90deg, #ff4b4b, #ff8700, #ffbd45, #00d4aa, #00c0f2, #1c83e1, #803df5) 1;
         border-radius: 8px;
-        margin: 20px auto;
-        max-width: 800px;
+        margin: 10px auto;
+        max-width: 900px;
+        height: 85vh;
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
     
     .chat-header {
         background-color: #262730;
-        padding: 20px;
-        text-align: center;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         border-bottom: 1px solid #3d4043;
+        flex-shrink: 0;
     }
     
     .chat-title {
-        font-size: 24px;
+        font-size: 16px;
         font-weight: 600;
         margin: 0;
         color: #fafafa;
     }
     
     .chat-subtitle {
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 400;
-        margin: 8px 0 0 0;
         color: #a6a6a6;
     }
     
     .chat-messages {
-        height: 500px;
+        flex: 1;
         overflow-y: auto;
         padding: 20px;
         background-color: #0e1117;
@@ -86,17 +91,21 @@ st.markdown("""
         margin-bottom: 16px;
         display: flex;
         align-items: flex-start;
-        animation: fadeIn 0.3s ease-out;
+        animation: messageSlideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
     
-    @keyframes fadeIn {
-        from {
+    @keyframes messageSlideIn {
+        0% {
             opacity: 0;
-            transform: translateY(5px);
+            transform: translateY(20px) scale(0.95);
         }
-        to {
+        50% {
+            opacity: 0.7;
+            transform: translateY(-2px) scale(1.02);
+        }
+        100% {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
     }
     
@@ -138,9 +147,10 @@ st.markdown("""
     }
     
     .chat-input-container {
-        padding: 20px;
+        padding: 15px 20px;
         background-color: #262730;
         border-top: 1px solid #3d4043;
+        flex-shrink: 0;
     }
     
     .stTextInput > div > div > input {
@@ -185,7 +195,7 @@ st.markdown("""
     
     .empty-state {
         text-align: center;
-        padding: 80px 20px;
+        padding: 60px 20px;
         color: #a6a6a6;
     }
     
@@ -255,8 +265,12 @@ st.markdown('<div class="main-container">', unsafe_allow_html=True)
 # Header
 st.markdown("""
     <div class="chat-header">
-        <h1 class="chat-title">🧠 Chandler Bing AI</h1>
-        <p class="chat-subtitle">Could this chatbot BE any more sarcastic?</p>
+        <div>
+            <h1 class="chat-title">🧠 Chandler Bing AI</h1>
+        </div>
+        <div>
+            <p class="chat-subtitle">Could this BE any more sarcastic?</p>
+        </div>
     </div>
 """, unsafe_allow_html=True)
 
