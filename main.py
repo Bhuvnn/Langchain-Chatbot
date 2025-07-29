@@ -338,7 +338,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_leave_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Auto-scroll to bottom script
 st.markdown("""
