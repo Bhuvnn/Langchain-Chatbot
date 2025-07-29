@@ -2,5 +2,7 @@ Langchain
 langchain_core
 langchain_community
 huggingface
+huggingface_hub
 dotenv
-langchain_google_genai
+langchain-google-genai
+streamlit
