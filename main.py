@@ -18,56 +18,55 @@ llm = ChatGoogleGenerativeAI(
 # Page config
 st.set_page_config(page_title="Chandler Bing Chat", page_icon="🧠", layout="centered")
 
-# Modern chatbot styling
+# Streamlit dark theme inspired styling
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap');
     
     .stApp {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        font-family: 'Inter', sans-serif;
+        background-color: #0e1117;
+        color: #fafafa;
+        font-family: 'Source Sans Pro', sans-serif;
     }
     
     .main-container {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 0;
+        background-color: #262730;
+        border: 1px solid;
+        border-image: linear-gradient(90deg, #ff4b4b, #ff8700, #ffbd45, #00d4aa, #00c0f2, #1c83e1, #803df5) 1;
+        border-radius: 8px;
         margin: 20px auto;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         max-width: 800px;
         overflow: hidden;
     }
     
     .chat-header {
-        background: linear-gradient(135deg, #ff6b6b, #feca57);
-        padding: 25px;
+        background-color: #262730;
+        padding: 20px;
         text-align: center;
-        color: white;
-        border-radius: 20px 20px 0 0;
+        border-bottom: 1px solid #3d4043;
     }
     
     .chat-title {
-        font-size: 28px;
-        font-weight: 700;
+        font-size: 24px;
+        font-weight: 600;
         margin: 0;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        color: #fafafa;
     }
     
     .chat-subtitle {
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 400;
         margin: 8px 0 0 0;
-        opacity: 0.9;
+        color: #a6a6a6;
     }
     
     .chat-messages {
         height: 500px;
         overflow-y: auto;
         padding: 20px;
-        background: #f8f9fa;
+        background-color: #0e1117;
         scrollbar-width: thin;
-        scrollbar-color: #ddd transparent;
+        scrollbar-color: #3d4043 transparent;
     }
     
     .chat-messages::-webkit-scrollbar {
@@ -79,7 +78,7 @@ st.markdown("""
     }
     
     .chat-messages::-webkit-scrollbar-thumb {
-        background: #ddd;
+        background: #3d4043;
         border-radius: 3px;
     }
     
@@ -87,13 +86,13 @@ st.markdown("""
         margin-bottom: 16px;
         display: flex;
         align-items: flex-start;
-        animation: slideIn 0.3s ease-out;
+        animation: fadeIn 0.3s ease-out;
     }
     
-    @keyframes slideIn {
+    @keyframes fadeIn {
         from {
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(5px);
         }
         to {
             opacity: 1;
@@ -110,115 +109,128 @@ st.markdown("""
     }
     
     .message-bubble {
-        max-width: 75%;
-        padding: 14px 18px;
-        border-radius: 18px;
-        font-size: 15px;
+        max-width: 70%;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
         line-height: 1.4;
         word-wrap: break-word;
         position: relative;
     }
     
     .user-bubble {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        border-bottom-right-radius: 4px;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        background-color: #3d4043;
+        color: #fafafa;
+        border: 1px solid #4a4a4a;
     }
     
     .bot-bubble {
-        background: linear-gradient(135deg, #ff6b6b, #feca57);
-        color: white;
-        border-bottom-left-radius: 4px;
-        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        background-color: #1e1e1e;
+        color: #fafafa;
+        border: 1px solid #333;
     }
     
-    .message-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        margin: 0 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        flex-shrink: 0;
-    }
-    
-    .user-avatar {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        order: 2;
-    }
-    
-    .bot-avatar {
-        background: linear-gradient(135deg, #ff6b6b, #feca57);
-        color: white;
+    .message-label {
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        color: #a6a6a6;
     }
     
     .chat-input-container {
         padding: 20px;
-        background: white;
-        border-top: 1px solid #e0e6ed;
-        border-radius: 0 0 20px 20px;
+        background-color: #262730;
+        border-top: 1px solid #3d4043;
     }
     
     .stTextInput > div > div > input {
-        background: #f8f9fa;
-        border: 2px solid #e0e6ed;
-        border-radius: 25px;
-        padding: 12px 20px;
-        font-size: 15px;
-        transition: all 0.3s ease;
+        background-color: #3d4043 !important;
+        border: 1px solid #4a4a4a !important;
+        border-radius: 6px !important;
+        color: #fafafa !important;
+        padding: 10px 14px !important;
+        font-size: 14px !important;
     }
     
     .stTextInput > div > div > input:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        outline: none;
+        border-color: #ff4b4b !important;
+        box-shadow: 0 0 0 1px #ff4b4b !important;
+        outline: none !important;
+    }
+    
+    .stTextInput > div > div > input::placeholder {
+        color: #a6a6a6 !important;
     }
     
     .stButton > button {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        border: none;
-        border-radius: 25px;
-        padding: 12px 30px;
-        font-size: 15px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        width: 100%;
+        background-color: #ff4b4b !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 8px 20px !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
+        width: 100% !important;
     }
     
     .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        background-color: #ff6b6b !important;
+        border: none !important;
+    }
+    
+    .stButton > button:active {
+        background-color: #e04444 !important;
     }
     
     .empty-state {
         text-align: center;
-        padding: 60px 20px;
-        color: #6c757d;
+        padding: 80px 20px;
+        color: #a6a6a6;
     }
     
     .empty-state-icon {
         font-size: 48px;
         margin-bottom: 16px;
+        opacity: 0.6;
+    }
+    
+    .empty-state h3 {
+        color: #fafafa;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    
+    .empty-state p {
+        color: #a6a6a6;
+        font-size: 14px;
     }
     
     .footer {
         text-align: center;
-        padding: 15px;
-        background: rgba(255, 255, 255, 0.8);
-        color: #6c757d;
-        font-size: 13px;
-        border-radius: 0 0 20px 20px;
+        padding: 12px;
+        background-color: #262730;
+        color: #a6a6a6;
+        font-size: 12px;
+        border-top: 1px solid #3d4043;
     }
     
     /* Hide Streamlit elements */
     .stDeployButton {display: none;}
     footer {visibility: hidden;}
     .stApp > header {visibility: hidden;}
+    
+    /* Form styling */
+    .stForm {
+        border: none !important;
+        background: transparent !important;
+    }
+    
+    /* Column gap */
+    .row-widget {
+        gap: 10px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -256,8 +268,8 @@ if len(st.session_state["messages"]) <= 1:
     st.markdown("""
         <div class="empty-state">
             <div class="empty-state-icon">💬</div>
-            <h3>Start a conversation with Chandler!</h3>
-            <p>Type something below and watch the sarcasm unfold...</p>
+            <h3>Start chatting with Chandler</h3>
+            <p>Type a message below to begin the conversation</p>
         </div>
     """, unsafe_allow_html=True)
 else:
@@ -266,16 +278,16 @@ else:
             st.markdown(f"""
                 <div class="message user-message">
                     <div class="message-bubble user-bubble">
+                        <div class="message-label">You</div>
                         {msg.content}
                     </div>
-                    <div class="message-avatar user-avatar">👤</div>
                 </div>
             """, unsafe_allow_html=True)
         elif isinstance(msg, AIMessage):
             st.markdown(f"""
                 <div class="message bot-message">
-                    <div class="message-avatar bot-avatar">🧠</div>
                     <div class="message-bubble bot-bubble">
+                        <div class="message-label">Chandler</div>
                         {msg.content}
                     </div>
                 </div>
@@ -287,17 +299,17 @@ st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('<div class="chat-input-container">', unsafe_allow_html=True)
 
 with st.form("chat_form", clear_on_submit=True):
-    col1, col2 = st.columns([4, 1])
+    col1, col2 = st.columns([5, 1])
     
     with col1:
         question = st.text_input(
             "Message", 
-            placeholder="Could I BE typing anything more interesting?",
+            placeholder="Type your message here...",
             label_visibility="collapsed"
         )
     
     with col2:
-        submitted = st.form_submit_button("Send 🚀")
+        submitted = st.form_submit_button("Send")
 
 if submitted and question:
     response = get_gemini_message(question)
@@ -308,11 +320,11 @@ st.markdown('</div>', unsafe_allow_html=True)
 # Footer
 st.markdown("""
     <div class="footer">
-        Made with ❤️ and a lot of sarcasm | Could this footer BE any smaller?
+        Made with sarcasm and code • Chandler Bing AI Assistant
     </div>
 """, unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_leave_html=True)
 
 # Auto-scroll to bottom script
 st.markdown("""
@@ -324,10 +336,6 @@ st.markdown("""
         }
     }
     
-    // Scroll to bottom after page loads
-    window.addEventListener('load', scrollToBottom);
-    
-    // Also scroll when new content is added
     setTimeout(scrollToBottom, 100);
     </script>
 """, unsafe_allow_html=True)
