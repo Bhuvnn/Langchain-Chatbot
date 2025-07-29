@@ -359,7 +359,7 @@ if "typing" not in st.session_state:
 def get_gemini_message(question):
     st.session_state.messages.append(HumanMessage(content=question))
     st.session_state.typing = True
-    st.experimental_rerun()
+    st.rerun()
     
     # Simulate typing delay
     time.sleep(1.5)
