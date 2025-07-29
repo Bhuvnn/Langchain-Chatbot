@@ -18,59 +18,209 @@ llm = ChatGoogleGenerativeAI(
 # Page config
 st.set_page_config(page_title="Chandler Bing Chat", page_icon="🧠", layout="centered")
 
-# Inject dark theme styling with chat bubbles
+# Modern chatbot styling
 st.markdown("""
     <style>
-    body {
-        background-color: #121212;
-        color: #EAEAEA;
-        font-family: 'Segoe UI', sans-serif;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    .stApp {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'Inter', sans-serif;
     }
-    .chat-container {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding: 20px;
+    
+    .main-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 0;
+        margin: 20px auto;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        overflow: hidden;
     }
-    .user-msg, .bot-msg {
-        max-width: 80%;
-        padding: 12px 16px;
-        border-radius: 15px;
-        font-size: 16px;
-        line-height: 1.5;
-        word-wrap: break-word;
-    }
-    .user-msg {
-        background-color: #1E88E5;
+    
+    .chat-header {
+        background: linear-gradient(135deg, #ff6b6b, #feca57);
+        padding: 25px;
+        text-align: center;
         color: white;
-        align-self: flex-start;
-        border-bottom-left-radius: 0;
+        border-radius: 20px 20px 0 0;
     }
-    .bot-msg {
-        background-color: #8E24AA;
-        color: white;
-        align-self: flex-end;
-        border-bottom-right-radius: 0;
-    }
+    
     .chat-title {
-        text-align: center;
-        color: #BB86FC;
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
+    
     .chat-subtitle {
+        font-size: 16px;
+        font-weight: 400;
+        margin: 8px 0 0 0;
+        opacity: 0.9;
+    }
+    
+    .chat-messages {
+        height: 500px;
+        overflow-y: auto;
+        padding: 20px;
+        background: #f8f9fa;
+        scrollbar-width: thin;
+        scrollbar-color: #ddd transparent;
+    }
+    
+    .chat-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: #ddd;
+        border-radius: 3px;
+    }
+    
+    .message {
+        margin-bottom: 16px;
+        display: flex;
+        align-items: flex-start;
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .user-message {
+        justify-content: flex-end;
+    }
+    
+    .bot-message {
+        justify-content: flex-start;
+    }
+    
+    .message-bubble {
+        max-width: 75%;
+        padding: 14px 18px;
+        border-radius: 18px;
+        font-size: 15px;
+        line-height: 1.4;
+        word-wrap: break-word;
+        position: relative;
+    }
+    
+    .user-bubble {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border-bottom-right-radius: 4px;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    .bot-bubble {
+        background: linear-gradient(135deg, #ff6b6b, #feca57);
+        color: white;
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+    }
+    
+    .message-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        margin: 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    
+    .user-avatar {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        order: 2;
+    }
+    
+    .bot-avatar {
+        background: linear-gradient(135deg, #ff6b6b, #feca57);
+        color: white;
+    }
+    
+    .chat-input-container {
+        padding: 20px;
+        background: white;
+        border-top: 1px solid #e0e6ed;
+        border-radius: 0 0 20px 20px;
+    }
+    
+    .stTextInput > div > div > input {
+        background: #f8f9fa;
+        border: 2px solid #e0e6ed;
+        border-radius: 25px;
+        padding: 12px 20px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+    
+    .stButton > button {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-size: 15px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .empty-state {
         text-align: center;
-        color: #CCCCCC;
-        margin-top: -10px;
+        padding: 60px 20px;
+        color: #6c757d;
     }
-    hr {
-        border: 1px solid #333;
+    
+    .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
     }
+    
+    .footer {
+        text-align: center;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.8);
+        color: #6c757d;
+        font-size: 13px;
+        border-radius: 0 0 20px 20px;
+    }
+    
+    /* Hide Streamlit elements */
+    .stDeployButton {display: none;}
+    footer {visibility: hidden;}
+    .stApp > header {visibility: hidden;}
     </style>
 """, unsafe_allow_html=True)
-
-# Title
-st.markdown("<h2 class='chat-title'>🧠 Your Personal Chandler Bing 🧠</h2>", unsafe_allow_html=True)
-st.markdown("<p class='chat-subtitle'>A sarcastic chat assistant, could it *BE* any funnier?</p>", unsafe_allow_html=True)
-st.markdown("<hr>", unsafe_allow_html=True)
 
 # Session state for messages
 if "messages" not in st.session_state:
@@ -87,24 +237,97 @@ def get_gemini_message(question):
     st.session_state["messages"].append(AIMessage(content=response.content))
     return response.content
 
-# Chat input form
+# Main container
+st.markdown('<div class="main-container">', unsafe_allow_html=True)
+
+# Header
+st.markdown("""
+    <div class="chat-header">
+        <h1 class="chat-title">🧠 Chandler Bing AI</h1>
+        <p class="chat-subtitle">Could this chatbot BE any more sarcastic?</p>
+    </div>
+""", unsafe_allow_html=True)
+
+# Chat messages container
+st.markdown('<div class="chat-messages" id="chat-messages">', unsafe_allow_html=True)
+
+# Display messages or empty state
+if len(st.session_state["messages"]) <= 1:
+    st.markdown("""
+        <div class="empty-state">
+            <div class="empty-state-icon">💬</div>
+            <h3>Start a conversation with Chandler!</h3>
+            <p>Type something below and watch the sarcasm unfold...</p>
+        </div>
+    """, unsafe_allow_html=True)
+else:
+    for msg in st.session_state["messages"][1:]:  # Skip system prompt
+        if isinstance(msg, HumanMessage):
+            st.markdown(f"""
+                <div class="message user-message">
+                    <div class="message-bubble user-bubble">
+                        {msg.content}
+                    </div>
+                    <div class="message-avatar user-avatar">👤</div>
+                </div>
+            """, unsafe_allow_html=True)
+        elif isinstance(msg, AIMessage):
+            st.markdown(f"""
+                <div class="message bot-message">
+                    <div class="message-avatar bot-avatar">🧠</div>
+                    <div class="message-bubble bot-bubble">
+                        {msg.content}
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Chat input at the bottom
+st.markdown('<div class="chat-input-container">', unsafe_allow_html=True)
+
 with st.form("chat_form", clear_on_submit=True):
-    question = st.text_input("Type something Chandler can mock 👇", placeholder="Could I BE any more sarcastic?")
-    submitted = st.form_submit_button("Send 💬")
+    col1, col2 = st.columns([4, 1])
+    
+    with col1:
+        question = st.text_input(
+            "Message", 
+            placeholder="Could I BE typing anything more interesting?",
+            label_visibility="collapsed"
+        )
+    
+    with col2:
+        submitted = st.form_submit_button("Send 🚀")
 
 if submitted and question:
     response = get_gemini_message(question)
-    st.session_state.last_response = response
+    st.rerun()  # Refresh to show new messages
 
-# Chat history display
-st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
-for msg in st.session_state["messages"][1:]:  # Skip system prompt
-    if isinstance(msg, HumanMessage):
-        st.markdown(f"<div class='user-msg'><strong>You:</strong><br>{msg.content}</div>", unsafe_allow_html=True)
-    elif isinstance(msg, AIMessage):
-        st.markdown(f"<div class='bot-msg'><strong>Chandler:</strong><br>{msg.content}</div>", unsafe_allow_html=True)
-st.markdown("</div>", unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Footer
-st.markdown("<hr>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center; font-size: 0.85em;'>Made with 🧀 and sarcasm | ©️ Friends Fan Project</p>", unsafe_allow_html=True)
+st.markdown("""
+    <div class="footer">
+        Made with ❤️ and a lot of sarcasm | Could this footer BE any smaller?
+    </div>
+""", unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Auto-scroll to bottom script
+st.markdown("""
+    <script>
+    function scrollToBottom() {
+        var chatMessages = document.getElementById('chat-messages');
+        if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+    
+    // Scroll to bottom after page loads
+    window.addEventListener('load', scrollToBottom);
+    
+    // Also scroll when new content is added
+    setTimeout(scrollToBottom, 100);
+    </script>
+""", unsafe_allow_html=True)
